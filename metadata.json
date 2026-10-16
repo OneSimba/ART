@@ -1,0 +1,6 @@
+{
+  "name": "AI-Augmented ART Patient Management System (AAAPMS)",
+  "description": "Industrial Electronic Patient Management System for Antiretroviral Therapy (EPMS-ART). Ministry of Health and Child Care, Manicaland Provincial Medical Directorate. Features XGBoost default risk scoring, Africa's Talking two-way SMS communication, offline sync, and low-literacy HCI visual voice tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,118 @@
+{
+  "entities": {
+    "users": {
+      "title": "User Profile",
+      "description": "Healthcare worker profile authenticated via Google Auth with rank and facility assignment",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["sister_in_charge", "nurse", "data_clerk", "vhw", "manager", "provincial_officer", "patient"] },
+        "roleTitle": { "type": "string", "maxLength": 100 },
+        "rankGrade": { "type": "string", "maxLength": 100 },
+        "facility": { "type": "string", "maxLength": 100 },
+        "district": { "type": "string", "maxLength": 100 },
+        "badge": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "email", "role"]
+    },
+    "patients": {
+      "title": "ART Patient Record",
+      "description": "Patient enrolled in antiretroviral therapy register",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "artNumber": { "type": "string", "maxLength": 50 },
+        "nationalId": { "type": "string", "maxLength": 30 },
+        "firstName": { "type": "string", "maxLength": 60 },
+        "lastName": { "type": "string", "maxLength": 60 },
+        "phoneNumber": { "type": "string", "maxLength": 30 },
+        "network": { "type": "string", "enum": ["Econet", "NetOne", "Telecel"] },
+        "currentRegimen": { "type": "string", "maxLength": 50 },
+        "facilityName": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["active", "defaulted", "transferred_out", "died", "stopped"] },
+        "currentRiskCategory": { "type": "string", "enum": ["Low", "Medium", "High"] },
+        "currentRiskScore": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "artNumber", "firstName", "lastName", "facilityName", "status"]
+    },
+    "appointments": {
+      "title": "ART Appointment Record",
+      "description": "Scheduled refill or review appointment for an ART client",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string", "maxLength": 100 },
+        "patientArt": { "type": "string", "maxLength": 50 },
+        "scheduledDate": { "type": "string", "maxLength": 20 },
+        "visitType": { "type": "string" },
+        "status": { "type": "string", "enum": ["scheduled", "attended", "missed", "rescheduled", "transferred", "deceased"] },
+        "facilityName": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "patientId", "scheduledDate", "status"]
+    },
+    "smsLogs": {
+      "title": "Outbound SMS Notification",
+      "description": "Log of automated and manual outbound telecom SMS dispatched to patients",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string", "maxLength": 100 },
+        "patientArt": { "type": "string", "maxLength": 50 },
+        "recipientPhone": { "type": "string", "maxLength": 30 },
+        "messageBody": { "type": "string", "maxLength": 500 },
+        "reminderType": { "type": "string" },
+        "deliveryStatus": { "type": "string", "enum": ["Delivered", "Sent", "Failed", "Pending"] },
+        "dispatchedAt": { "type": "string" },
+        "facilityName": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["id", "patientId", "recipientPhone", "messageBody", "deliveryStatus"]
+    },
+    "inboundSMS": {
+      "title": "Inbound Patient SMS",
+      "description": "Incoming SMS message sent by patient or community treatment supporter",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderPhone": { "type": "string", "maxLength": 30 },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string", "maxLength": 100 },
+        "patientArt": { "type": "string", "maxLength": 50 },
+        "messageBody": { "type": "string", "maxLength": 500 },
+        "receivedAt": { "type": "string" },
+        "intent": { "type": "string" },
+        "processed": { "type": "boolean" },
+        "actionTaken": { "type": "string" }
+      },
+      "required": ["id", "senderPhone", "messageBody", "receivedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/users" },
+      "description": "Healthcare worker profile authenticated via Google Auth"
+    },
+    "/patients/{patientId}": {
+      "schema": { "$ref": "#/entities/patients" },
+      "description": "ART patient records managed by clinic staff"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": { "$ref": "#/entities/appointments" },
+      "description": "Scheduled appointments and refill tracking"
+    },
+    "/smsLogs/{logId}": {
+      "schema": { "$ref": "#/entities/smsLogs" },
+      "description": "Outbound SMS communications log"
+    },
+    "/inboundSMS/{inboundId}": {
+      "schema": { "$ref": "#/entities/inboundSMS" },
+      "description": "Inbound patient SMS messages"
+    }
+  }
+}
